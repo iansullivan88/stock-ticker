@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+  <head>
+    <title>Stock Ticker</title>
+  </head>
+  <body>
+    <table id="prices">
+
+    </table>
+    <script>
+      var connection = new WebSocket("ws://localhost:3000"),
+          table = document.getElementById("prices");
+
+      connection.onmessage = function(e) {
+          // Message is text and is of the form 'symbol:price'
+          var values = e.data.split(':'),
+              symbol = values[0],
+              price = parseFloat(values[1]);
+
+          var row = table.querySelector("tr[data-symbol='" + symbol + "']");
+          if (!row) {
+              // If the row doesn't exist yet, create it
+              row = document.createElement("tr");
+              row.setAttribute("data-symbol", symbol);
+              table.appendChild(row);
+          }
+
+          // Set the new price on the row
+          row.innerHTML = "<td>" + symbol + "</td><td>" + price.toFixed(2) + "</td>";
+
+      };
+    </script>
+  </body>
+</html>
